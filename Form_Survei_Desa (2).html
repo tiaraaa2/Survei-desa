@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survei Kesehatan &amp; UMKM Desa</title>
+<style>
+  :root{
+    --navy:#1F3864;
+    --navy-dark:#14213D;
+    --gold:#B5892B;
+    --bg:#F7F5F0;
+    --card:#FFFFFF;
+    --border:#DCD6C8;
+    --text:#22252B;
+    --text-soft:#5B5F6B;
+    --success:#2F6F4F;
+    --danger:#B3432B;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:20px 16px 60px;
+    min-height:100vh;
+  }
+  header.top{
+    text-align:center;
+    padding:18px 0 14px;
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  h1.main-title{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:22px;
+    line-height:1.3;
+    color:var(--navy-dark);
+    margin:0 0 4px;
+  }
+  .sub-title{
+    font-size:13px;
+    color:var(--text-soft);
+    margin:0;
+  }
+
+  /* Progress */
+  .progress-track{
+    display:flex;
+    align-items:center;
+    margin:22px 0 8px;
+    gap:4px;
+  }
+  .progress-seg{
+    flex:1;
+    height:4px;
+    background:var(--border);
+    border-radius:3px;
+    overflow:hidden;
+    position:relative;
+  }
+  .progress-seg.done{background:var(--gold);}
+  .progress-seg.active{background:var(--border);}
+  .progress-seg.active::after{
+    content:'';
+    position:absolute;left:0;top:0;bottom:0;width:50%;
+    background:var(--gold);
+  }
+  .progress-labels{
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    color:var(--text-soft);
+    margin-bottom:18px;
+    letter-spacing:.02em;
+  }
+  .progress-labels span.current{color:var(--navy);font-weight:700;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px 20px;
+    box-shadow:0 1px 2px rgba(20,33,61,0.04);
+  }
+
+  .step-title{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:19px;
+    color:var(--navy-dark);
+    margin:0 0 4px;
+  }
+  .step-desc{
+    font-size:13px;
+    color:var(--text-soft);
+    margin:0 0 20px;
+  }
+
+  .field{
+    margin-bottom:16px;
+  }
+  .field label{
+    display:block;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--text);
+    margin-bottom:6px;
+  }
+  .field input[type=text],
+  .field input[type=number],
+  .field textarea{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--text);
+    background:#FCFBF9;
+  }
+  .field input:focus, .field textarea:focus{
+    outline:2px solid var(--navy);
+    outline-offset:1px;
+    background:#fff;
+  }
+  .field textarea{resize:vertical;min-height:80px;}
+
+  .radio-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .radio-pill{
+    flex:1;
+    min-width:110px;
+    position:relative;
+  }
+  .radio-pill input{
+    position:absolute;
+    opacity:0;
+    width:100%;height:100%;
+    top:0;left:0;
+    cursor:pointer;
+    margin:0;
+  }
+  .radio-pill .pill-label{
+    display:block;
+    text-align:center;
+    padding:10px 8px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:13.5px;
+    color:var(--text);
+    background:#FCFBF9;
+    transition:all .12s ease;
+  }
+  .radio-pill input:checked + .pill-label{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+    font-weight:600;
+  }
+
+  .dimensi-header{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    margin:26px 0 12px;
+    padding-bottom:6px;
+    border-bottom:2px solid var(--navy);
+  }
+  .dimensi-header:first-of-type{margin-top:6px;}
+  .dimensi-header .kode{
+    font-family:Georgia,serif;
+    font-weight:700;
+    color:var(--gold);
+    font-size:13px;
+  }
+  .dimensi-header .nama{
+    font-size:14px;
+    font-weight:700;
+    color:var(--navy-dark);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+
+  .likert-item{
+    margin-bottom:18px;
+    padding-bottom:16px;
+    border-bottom:1px dashed var(--border);
+  }
+  .likert-item:last-child{border-bottom:none;}
+  .likert-q{
+    font-size:14.5px;
+    line-height:1.45;
+    color:var(--text);
+    margin-bottom:10px;
+  }
+  .scale-row{
+    display:flex;
+    gap:6px;
+    justify-content:space-between;
+  }
+  .scale-opt{
+    flex:1;
+    position:relative;
+    text-align:center;
+  }
+  .scale-opt input{
+    position:absolute;
+    opacity:0;
+    width:100%;height:100%;
+    left:0;top:0;
+    cursor:pointer;
+    margin:0;
+  }
+  .scale-opt .dot{
+    width:38px;height:38px;
+    line-height:38px;
+    margin:0 auto 4px;
+    border-radius:50%;
+    border:1.5px solid var(--border);
+    background:#FCFBF9;
+    font-size:14px;
+    font-weight:700;
+    color:var(--text-soft);
+    transition:all .12s ease;
+  }
+  .scale-opt input:checked + .dot{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:#fff;
+    transform:scale(1.06);
+  }
+  .scale-opt .tiny-label{
+    font-size:9px;
+    color:var(--text-soft);
+    display:block;
+    letter-spacing:.02em;
+  }
+
+  .nav-row{
+    display:flex;
+    gap:10px;
+    margin-top:24px;
+  }
+  button{
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    border-radius:8px;
+    padding:13px 18px;
+    cursor:pointer;
+    border:none;
+    transition:opacity .12s ease, transform .05s ease;
+  }
+  button:active{transform:scale(0.98);}
+  .btn-primary{
+    background:var(--navy);
+    color:#fff;
+    flex:1;
+  }
+  .btn-primary:hover{opacity:.92;}
+  .btn-ghost{
+    background:transparent;
+    color:var(--navy);
+    border:1.5px solid var(--border);
+  }
+  .btn-submit{
+    background:var(--gold);
+    color:#fff;
+    flex:1;
+  }
+
+  .notice{
+    font-size:12.5px;
+    color:var(--danger);
+    margin-top:10px;
+    display:none;
+  }
+  .notice.show{display:block;}
+
+  .done-screen{
+    text-align:center;
+    padding:20px 4px 6px;
+  }
+  .done-icon{
+    width:56px;height:56px;
+    border-radius:50%;
+    background:var(--success);
+    color:#fff;
+    font-size:28px;
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 16px;
+  }
+  .done-title{
+    font-family:Georgia,serif;
+    font-size:20px;
+    color:var(--navy-dark);
+    margin:0 0 6px;
+  }
+  .done-desc{
+    font-size:13.5px;
+    color:var(--text-soft);
+    margin:0 0 22px;
+    line-height:1.5;
+  }
+
+  .footer-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--text-soft);
+    margin-top:22px;
+    line-height:1.6;
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Program Pembinaan Desa Cantik</div>
+    <h1 class="main-title">Survei Kesehatan &amp; Pemberdayaan UMKM Desa</h1>
+    <p class="sub-title">Bahan penyusunan statistik desa &amp; rekomendasi kebijakan</p>
+  </header>
+
+  <div class="progress-track" id="progressTrack"></div>
+  <div class="progress-labels" id="progressLabels"></div>
+
+  <div class="card" id="cardArea"></div>
+
+  <p class="footer-note">Data akan tersimpan otomatis ke Google Sheets tim survei.<br>Pastikan koneksi internet aktif saat mengirim jawaban.</p>
+</div>
+
+<script>
+(function(){
+  // ---------- KONFIGURASI ----------
+  // Ganti URL di bawah ini dengan Web App URL Google Apps Script milikmu.
+  // Lihat panduan setup di dokumen terpisah yang sudah dikirimkan.
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_2HkwukXjYaahf8gcWM8nmF1gT7oa3-OHQubtfurr3dzGJpD1XCK4QkIe3KaVt1arzA/exec";
+
+  // ---------- DATA MODEL ----------
+  const kesehatanSections = [
+    { kode:'A', nama:'Tangible', items:[
+      ['TG1','Fasilitas kesehatan (posyandu/pustu/poskesdes) di desa ini dalam kondisi bersih dan layak digunakan.'],
+      ['TG2','Peralatan dan perlengkapan medis dasar yang tersedia cukup memadai.'],
+      ['TG3','Petugas kesehatan berpenampilan rapi dan profesional saat memberikan layanan.'],
+    ]},
+    { kode:'B', nama:'Reliability', items:[
+      ['REL1','Jadwal pelayanan posyandu/kesehatan desa berjalan sesuai dengan jadwal yang ditetapkan.'],
+      ['REL2','Ketersediaan obat-obatan dasar di fasilitas kesehatan desa cukup konsisten.'],
+      ['REL3','Informasi terkait layanan kesehatan yang diberikan selalu akurat dan dapat dipercaya.'],
+    ]},
+    { kode:'C', nama:'Responsiveness', items:[
+      ['RES1','Petugas kesehatan cepat tanggap dalam menangani keluhan warga.'],
+      ['RES2','Warga tidak perlu menunggu lama untuk mendapatkan pelayanan kesehatan.'],
+      ['RES3','Petugas kesehatan bersedia membantu di luar jam pelayanan bila terjadi kondisi darurat.'],
+    ]},
+    { kode:'D', nama:'Assurance', items:[
+      ['ASS1','Saya percaya terhadap kompetensi dan pengetahuan tenaga kesehatan di desa ini.'],
+      ['ASS2','Tenaga kesehatan memberikan penjelasan yang meyakinkan terkait kondisi kesehatan pasien.'],
+      ['ASS3','Saya merasa aman dan nyaman ketika mendapat pelayanan kesehatan di desa ini.'],
+    ]},
+    { kode:'E', nama:'Empathy', items:[
+      ['EMP1','Petugas kesehatan memberikan perhatian secara personal kepada setiap pasien.'],
+      ['EMP2','Petugas kesehatan memahami kebutuhan khusus warga (lansia, ibu hamil, balita).'],
+      ['EMP3','Petugas kesehatan melayani dengan sikap ramah dan sabar.'],
+    ]},
+  ];
+
+  const umkmSections = [
+    { kode:'A', nama:'Pengetahuan Usaha', items:[
+      ['PU1','Saya memahami cara mengelola keuangan usaha secara sederhana (pencatatan pemasukan-pengeluaran).'],
+      ['PU2','Saya memahami cara menghitung harga pokok dan keuntungan usaha.'],
+      ['PU3','Saya memahami pentingnya legalitas usaha (NIB/izin usaha mikro).'],
+    ]},
+    { kode:'B', nama:'Keterampilan Usaha', items:[
+      ['KU1','Saya mampu memproduksi dan mengemas produk usaha dengan baik.'],
+      ['KU2','Saya mampu memasarkan produk usaha, termasuk melalui media sosial/online.'],
+      ['KU3','Saya mampu berinovasi mengembangkan produk sesuai kebutuhan pasar.'],
+    ]},
+    { kode:'C', nama:'Akses Modal &amp; Pasar', items:[
+      ['AM1','Saya mendapat kemudahan mengakses modal usaha dari desa/BUMDes/koperasi.'],
+      ['AM2','Saya memiliki akses ke pasar yang lebih luas (luar desa) untuk memasarkan produk.'],
+      ['AM3','Saya mendapat informasi peluang usaha dan bantuan dari pemerintah desa secara terbuka.'],
+    ]},
+    { kode:'D', nama:'Partisipasi', items:[
+      ['PA1','Saya aktif mengikuti pelatihan/pendampingan UMKM yang diadakan oleh desa.'],
+      ['PA2','Saya dilibatkan dalam musyawarah/perencanaan program pengembangan UMKM desa.'],
+      ['PA3','Saya menyampaikan aspirasi/masukan terkait kebutuhan pembinaan UMKM di desa.'],
+    ]},
+    { kode:'E', nama:'Kemandirian', items:[
+      ['KM1','Usaha saya tetap dapat berjalan meskipun tanpa bantuan/pendampingan terus-menerus.'],
+      ['KM2','Saya mampu mengambil keputusan usaha secara mandiri berdasarkan pengetahuan yang dimiliki.'],
+      ['KM3','Pendapatan usaha saya menunjukkan peningkatan sejak mengikuti pembinaan desa.'],
+    ]},
+  ];
+
+  const scaleLabels = ['STS','TS','N','S','SS'];
+
+  // ---------- STATE ----------
+  let answers = {
+    nama:'', usia:'', jk:'', dusun:'', pekerjaan:'', status:'', jenisUsaha:'', lamaUsaha:'',
+    catatan:''
+  };
+  let currentStep = 0;
+  let steps = []; // built dynamically after step 0 based on status
+
+  function buildSteps(){
+    steps = ['identitas','kesehatan'];
+    if(answers.status === 'umkm'){ steps.push('umkm'); }
+    steps.push('catatan');
+    steps.push('selesai');
+  }
+  buildSteps();
+
+  const stepLabels = { identitas:'Identitas', kesehatan:'Kesehatan', umkm:'UMKM', catatan:'Catatan', selesai:'Kirim' };
+
+  // ---------- RENDER PROGRESS ----------
+  function renderProgress(){
+    const track = document.getElementById('progressTrack');
+    const labels = document.getElementById('progressLabels');
+    track.innerHTML = '';
+    labels.innerHTML = '';
+    steps.forEach((s, i) => {
+      const seg = document.createElement('div');
+      seg.className = 'progress-seg' + (i < currentStep ? ' done' : (i === currentStep ? ' active' : ''));
+      track.appendChild(seg);
+      const lab = document.createElement('span');
+      lab.textContent = stepLabels[s];
+      if(i === currentStep) lab.className = 'current';
+      labels.appendChild(lab);
+    });
+  }
+
+  // ---------- HELPERS ----------
+  function likertBlock(sections, prefix){
+    let html = '';
+    sections.forEach(sec => {
+      html += `<div class="dimensi-header"><span class="kode">${sec.kode}</span><span class="nama">${sec.nama}</span></div>`;
+      sec.items.forEach(([code, text]) => {
+        const current = answers[code] || '';
+        html += `<div class="likert-item">
+          <div class="likert-q">${text}</div>
+          <div class="scale-row">
+            ${[1,2,3,4,5].map(v => `
+              <label class="scale-opt">
+                <input type="radio" name="${code}" value="${v}" ${String(current)===String(v)?'checked':''} onchange="window.__setAns('${code}', this.value)">
+                <span class="dot">${v}</span>
+                ${(v===1||v===5)?`<span class="tiny-label">${v===1?'STS':'SS'}</span>`:''}
+              </label>
+            `).join('')}
+          </div>
+        </div>`;
+      });
+    });
+    return html;
+  }
+
+  window.__setAns = function(key, val){ answers[key] = val; };
+
+  function allAnswered(sections){
+    for(const sec of sections){
+      for(const [code] of sec.items){
+        if(!answers[code]) return false;
+      }
+    }
+    return true;
+  }
+
+  // ---------- STEP RENDERERS ----------
+  function renderIdentitas(){
+    return `
+      <div class="step-title">Identitas Responden</div>
+      <p class="step-desc">Isi data diri responden dengan lengkap dan sesuai KTP/pengakuan langsung.</p>
+
+      <div class="field">
+        <label>Nama Responden</label>
+        <input type="text" id="f_nama" value="${answers.nama}">
+      </div>
+      <div class="field">
+        <label>Usia</label>
+        <input type="number" id="f_usia" value="${answers.usia}">
+      </div>
+      <div class="field">
+        <label>Jenis Kelamin</label>
+        <div class="radio-row">
+          <div class="radio-pill">
+            <input type="radio" name="jk" value="L" id="jkL" ${answers.jk==='L'?'checked':''}>
+            <label class="pill-label" for="jkL">Laki-laki</label>
+          </div>
+          <div class="radio-pill">
+            <input type="radio" name="jk" value="P" id="jkP" ${answers.jk==='P'?'checked':''}>
+            <label class="pill-label" for="jkP">Perempuan</label>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Dusun / RT-RW</label>
+        <input type="text" id="f_dusun" value="${answers.dusun}">
+      </div>
+      <div class="field">
+        <label>Pekerjaan</label>
+        <input type="text" id="f_pekerjaan" value="${answers.pekerjaan}">
+      </div>
+      <div class="field">
+        <label>Status Responden</label>
+        <div class="radio-row">
+          <div class="radio-pill">
+            <input type="radio" name="status" value="umum" id="stUmum" ${answers.status==='umum'?'checked':''}>
+            <label class="pill-label" for="stUmum">Warga Umum</label>
+          </div>
+          <div class="radio-pill">
+            <input type="radio" name="status" value="umkm" id="stUmkm" ${answers.status==='umkm'?'checked':''}>
+            <label class="pill-label" for="stUmkm">Pelaku UMKM</label>
+          </div>
+        </div>
+      </div>
+      <div class="field" id="jenisUsahaField" style="display:${answers.status==='umkm'?'block':'none'}">
+        <label>Jenis Usaha</label>
+        <input type="text" id="f_jenisUsaha" value="${answers.jenisUsaha}">
+      </div>
+      <div class="field" id="lamaUsahaField" style="display:${answers.status==='umkm'?'block':'none'}">
+        <label>Lama Usaha Berjalan</label>
+        <input type="text" id="f_lamaUsaha" value="${answers.lamaUsaha}" placeholder="contoh: 2 tahun">
+      </div>
+      <p class="notice" id="noticeIdentitas">Mohon lengkapi nama, jenis kelamin, dan status responden sebelum melanjutkan.</p>
+    `;
+  }
+
+  function bindIdentitasEvents(){
+    document.getElementById('f_nama').addEventListener('input', e => answers.nama = e.target.value);
+    document.getElementById('f_usia').addEventListener('input', e => answers.usia = e.target.value);
+    document.getElementById('f_dusun').addEventListener('input', e => answers.dusun = e.target.value);
+    document.getElementById('f_pekerjaan').addEventListener('input', e => answers.pekerjaan = e.target.value);
+    document.querySelectorAll('input[name=jk]').forEach(r => r.addEventListener('change', e => answers.jk = e.target.value));
+    document.querySelectorAll('input[name=status]').forEach(r => r.addEventListener('change', e => {
+      answers.status = e.target.value;
+      document.getElementById('jenisUsahaField').style.display = answers.status === 'umkm' ? 'block' : 'none';
+      document.getElementById('lamaUsahaField').style.display = answers.status === 'umkm' ? 'block' : 'none';
+    }));
+    const ju = document.getElementById('f_jenisUsaha');
+    const lu = document.getElementById('f_lamaUsaha');
+    if(ju) ju.addEventListener('input', e => answers.jenisUsaha = e.target.value);
+    if(lu) lu.addEventListener('input', e => answers.lamaUsaha = e.target.value);
+  }
+
+  function renderKesehatan(){
+    return `
+      <div class="step-title">Kualitas Pelayanan Kesehatan Desa</div>
+      <p class="step-desc">Skala: 1 = Sangat Tidak Setuju &nbsp;·&nbsp; 5 = Sangat Setuju</p>
+      ${likertBlock(kesehatanSections)}
+      <p class="notice" id="noticeKesehatan">Mohon isi seluruh pernyataan sebelum melanjutkan.</p>
+    `;
+  }
+
+  function renderUmkm(){
+    return `
+      <div class="step-title">Pemberdayaan UMKM Desa</div>
+      <p class="step-desc">Skala: 1 = Sangat Tidak Setuju &nbsp;·&nbsp; 5 = Sangat Setuju</p>
+      ${likertBlock(umkmSections)}
+      <p class="notice" id="noticeUmkm">Mohon isi seluruh pernyataan sebelum melanjutkan.</p>
+    `;
+  }
+
+  function renderCatatan(){
+    return `
+      <div class="step-title">Catatan Tambahan</div>
+      <p class="step-desc">Opsional — tuliskan masukan atau kondisi khusus yang perlu dicatat petugas survei.</p>
+      <div class="field">
+        <textarea id="f_catatan">${answers.catatan}</textarea>
+      </div>
+    `;
+  }
+
+  function bindCatatanEvents(){
+    const c = document.getElementById('f_catatan');
+    if(c) c.addEventListener('input', e => answers.catatan = e.target.value);
+  }
+
+  function renderSelesai(){
+    return `
+      <div class="done-screen">
+        <div class="done-icon">&#10003;</div>
+        <div class="done-title">Siap dikirim</div>
+        <p class="done-desc">Periksa kembali ringkasan jawaban di bawah, lalu kirim data. Setelah dikirim, jawaban akan tersimpan bersama data tim lapangan lainnya.</p>
+        <div style="text-align:left;font-size:13px;background:#FCFBF9;border:1px solid var(--border);border-radius:8px;padding:14px;">
+          <strong>${answers.nama || '(nama belum diisi)'}</strong><br>
+          ${answers.dusun || '-'} · ${answers.status === 'umkm' ? 'Pelaku UMKM' : 'Warga Umum'}<br>
+          Usia: ${answers.usia || '-'} · JK: ${answers.jk === 'L' ? 'Laki-laki' : (answers.jk==='P' ? 'Perempuan' : '-')}
+        </div>
+      </div>
+    `;
+  }
+
+  // ---------- MAIN RENDER ----------
+  function render(){
+    buildSteps();
+    if(currentStep >= steps.length) currentStep = steps.length - 1;
+    renderProgress();
+    const stepKey = steps[currentStep];
+    const card = document.getElementById('cardArea');
+    let inner = '';
+    if(stepKey === 'identitas') inner = renderIdentitas();
+    else if(stepKey === 'kesehatan') inner = renderKesehatan();
+    else if(stepKey === 'umkm') inner = renderUmkm();
+    else if(stepKey === 'catatan') inner = renderCatatan();
+    else if(stepKey === 'selesai') inner = renderSelesai();
+
+    const isFirst = currentStep === 0;
+    const isLast = stepKey === 'selesai';
+
+    let navHtml = '<div class="nav-row">';
+    if(!isFirst){ navHtml += `<button class="btn-ghost" id="btnBack" type="button">Kembali</button>`; }
+    if(!isLast){ navHtml += `<button class="btn-primary" id="btnNext" type="button">Lanjut</button>`; }
+    else { navHtml += `<button class="btn-submit" id="btnSubmit" type="button">Kirim Jawaban</button>`; }
+    navHtml += '</div>';
+
+    card.innerHTML = inner + navHtml;
+
+    if(stepKey === 'identitas') bindIdentitasEvents();
+    if(stepKey === 'catatan') bindCatatanEvents();
+
+    const backBtn = document.getElementById('btnBack');
+    if(backBtn) backBtn.addEventListener('click', () => { currentStep--; render(); window.scrollTo(0,0); });
+
+    const nextBtn = document.getElementById('btnNext');
+    if(nextBtn) nextBtn.addEventListener('click', () => {
+      if(stepKey === 'identitas'){
+        if(!answers.nama || !answers.jk || !answers.status){
+          document.getElementById('noticeIdentitas').classList.add('show');
+          return;
+        }
+      }
+      if(stepKey === 'kesehatan'){
+        if(!allAnswered(kesehatanSections)){
+          document.getElementById('noticeKesehatan').classList.add('show');
+          return;
+        }
+      }
+      if(stepKey === 'umkm'){
+        if(!allAnswered(umkmSections)){
+          document.getElementById('noticeUmkm').classList.add('show');
+          return;
+        }
+      }
+      currentStep++;
+      render();
+      window.scrollTo(0,0);
+    });
+
+    const submitBtn = document.getElementById('btnSubmit');
+    if(submitBtn) submitBtn.addEventListener('click', submitData);
+  }
+
+  // ---------- SUBMIT (ke Google Sheets via Apps Script) ----------
+  async function submitData(){
+    const submitBtn = document.getElementById('btnSubmit');
+    submitBtn.textContent = 'Mengirim...';
+    submitBtn.disabled = true;
+    const payload = { ...answers, submittedAt: new Date().toISOString() };
+    try{
+      if(!SCRIPT_URL || SCRIPT_URL.indexOf('GANTI_DENGAN') === 0){
+        throw new Error('SCRIPT_URL belum diisi. Lihat panduan setup Google Sheets.');
+      }
+      // mode no-cors: respons tidak bisa dibaca, tapi request tetap terkirim ke Apps Script
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      const card = document.getElementById('cardArea');
+      card.innerHTML = `
+        <div class="done-screen">
+          <div class="done-icon">&#10003;</div>
+          <div class="done-title">Jawaban terkirim</div>
+          <p class="done-desc">Terima kasih, data responden <strong>${answers.nama}</strong> telah tersimpan ke Google Sheets.</p>
+          <button class="btn-primary" id="btnNewEntry" type="button" style="width:100%;">Isi Responden Baru</button>
+        </div>
+      `;
+      document.getElementById('btnNewEntry').addEventListener('click', () => {
+        answers = { nama:'', usia:'', jk:'', dusun:'', pekerjaan:'', status:'', jenisUsaha:'', lamaUsaha:'', catatan:'' };
+        kesehatanSections.forEach(sec => sec.items.forEach(([c]) => delete answers[c]));
+        umkmSections.forEach(sec => sec.items.forEach(([c]) => delete answers[c]));
+        currentStep = 0;
+        render();
+        window.scrollTo(0,0);
+      });
+    }catch(err){
+      submitBtn.textContent = 'Kirim Jawaban';
+      submitBtn.disabled = false;
+      alert('Gagal mengirim data: ' + err.message + '\nPeriksa koneksi internet atau konfigurasi SCRIPT_URL, lalu coba lagi.');
+      console.error(err);
+    }
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
